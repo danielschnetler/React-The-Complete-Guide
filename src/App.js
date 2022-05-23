@@ -29,15 +29,10 @@ const App = () => {
     console.log(expense);
   };
 
-  const filterExpensesByYearHandler = (eventData) => {
-    console.log("Logging from App.js");
-    console.log(eventData);
-  };
-
   return (
     <div>
       <NewExpense onAddExpense={addExpenseHandler}/>
-      <Expenses items={expenses} onFilterExpenses={filterExpensesByYearHandler} />
+      <Expenses items={expenses} />
     </div>
   );
 }
