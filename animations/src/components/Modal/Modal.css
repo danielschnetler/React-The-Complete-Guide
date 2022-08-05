@@ -10,4 +10,15 @@
     top: 30%;
     left: 25%;
     width: 50%;
+    transition: all 0.3s ease-out;
+}
+
+.ModalOpen {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.ModalClosed {
+    opacity: 0;
+    transform: translateY(-100%);
 }
