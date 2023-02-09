@@ -5,7 +5,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import HomePage from "./pages/Home";
-import EventsPage from "./pages/Events";
+import EventsPage, { loader as eventLoader } from "./pages/Events";
 import EventsDetailPage from "./pages/EventsDetail";
 import NewEventPage from "./pages/NewEvent";
 import EditEventPage from "./pages/EditEventPage";
@@ -16,20 +16,7 @@ const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<RootLayout />}>
     <Route index="true" element={<HomePage />} />
     <Route path="events" element={<EventsRootLayout />}>
-      <Route
-        index="true"
-        element={<EventsPage />}
-        loader={async () => {
-          const response = await fetch("http://localhost:8080/events");
-
-          if (!response.ok) {
-            //setError("Fetching events failed.");
-          } else {
-            const resData = await response.json();
-            return resData.events;
-          }
-        }}
-      />
+      <Route index="true" element={<EventsPage />} loader={eventLoader} />
       <Route path=":eventId" element={<EventsDetailPage />} />
       <Route path="new" element={<NewEventPage />} />
       <Route path=":eventId/edit" element={<EditEventPage />} />
