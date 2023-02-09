@@ -4,11 +4,13 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
+import ErrorPage from "./pages/Error";
 import HomePage from "./pages/Home";
 import ProductsPage from "./pages/Products";
+import RootLayout from "./pages/Root";
 
 const routeDefinitions = createRoutesFromElements(
-  <Route>
+  <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
     <Route path="/" element={<HomePage />} />
     <Route path="/products" element={<ProductsPage />} />
   </Route>
