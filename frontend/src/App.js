@@ -9,9 +9,8 @@ import EventsPage from "./pages/Events";
 import EventsDetailPage from "./pages/EventsDetail";
 import NewEventPage from "./pages/NewEvent";
 import EditEventPage from "./pages/EditEventPage";
+import RootLayout from "./Root";
 
-// 3. Add a root layout that adds the <MainNavigation> component above all page components
-// 4. Add properly working links to the MainNavigation
 // 5. Ensure that the links in MainNavigation receive an "active" class when active
 // 6. Output a list of dummy events to the EventsPage
 //    Every list item should include a link to the respective EventDetailPage
@@ -19,7 +18,7 @@ import EditEventPage from "./pages/EditEventPage";
 // BONUS: Add another (nested) layout route that adds the <EventNavigation> component above all /events... page components
 
 const routeDefinitions = createRoutesFromElements(
-  <Route path="/">
+  <Route path="/" element={<RootLayout />}>
     <Route path="/" element={<HomePage />} />
     <Route path="/events" element={<EventsPage />} />
     <Route path="/events/:eventId" element={<EventsDetailPage />} />
