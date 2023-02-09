@@ -11,7 +11,6 @@ import NewEventPage from "./pages/NewEvent";
 import EditEventPage from "./pages/EditEventPage";
 import RootLayout from "./Root";
 
-// 7. Output the ID of the selected event on the EventDetailPage
 // BONUS: Add another (nested) layout route that adds the <EventNavigation> component above all /events... page components
 
 const routeDefinitions = createRoutesFromElements(
