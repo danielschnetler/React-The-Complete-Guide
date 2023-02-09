@@ -16,7 +16,20 @@ const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<RootLayout />}>
     <Route index="true" element={<HomePage />} />
     <Route path="events" element={<EventsRootLayout />}>
-      <Route index="true" element={<EventsPage />} />
+      <Route
+        index="true"
+        element={<EventsPage />}
+        loader={async () => {
+          const response = await fetch("http://localhost:8080/events");
+
+          if (!response.ok) {
+            //setError("Fetching events failed.");
+          } else {
+            const resData = await response.json();
+            return resData.events;
+          }
+        }}
+      />
       <Route path=":eventId" element={<EventsDetailPage />} />
       <Route path="new" element={<NewEventPage />} />
       <Route path=":eventId/edit" element={<EditEventPage />} />
