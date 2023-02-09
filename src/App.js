@@ -12,7 +12,7 @@ import RootLayout from "./pages/Root";
 
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
-    <Route path="/" element={<HomePage />} />
+    <Route index="true" element={<HomePage />} /> {/* path="/" */}
     <Route path="products" element={<ProductsPage />} />
     <Route path="products/:productId" element={<ProductDetailPage />} />
   </Route>
