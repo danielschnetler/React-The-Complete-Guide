@@ -6,10 +6,26 @@ function MainNavigation() {
       <nav>
         <ul className={classes.list}>
           <li>
-            <a href="/">Home</a>
+            <a
+              href="/"
+              className={({ isActive }) =>
+                isActive ? classes.active : undefined
+              }
+              end
+            >
+              Home
+            </a>
           </li>
           <li>
-            <a href="/Events">Events</a>
+            <a
+              href="/Events"
+              className={({ isActive }) =>
+                isActive ? classes.active : undefined
+              }
+              end
+            >
+              Events
+            </a>
           </li>
         </ul>
       </nav>
