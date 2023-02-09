@@ -6,7 +6,7 @@ function EventsDetailPage() {
   return (
     <>
       <h1>Events Detail</h1>
-      <p>{parameters.eventId}</p>
+      <p>Event ID:{parameters.eventId}</p>
     </>
   );
 }

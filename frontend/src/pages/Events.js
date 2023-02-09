@@ -13,7 +13,7 @@ function EventsPage() {
       <h1>Events</h1>
       <ul>
         {EVENTS.map((ev) => (
-          <li id={ev.id}>
+          <li key={ev.id}>
             <Link to={`/events/${ev.id}`}>{ev.description}</Link>
           </li>
         ))}

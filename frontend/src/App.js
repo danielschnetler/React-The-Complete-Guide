@@ -10,16 +10,17 @@ import EventsDetailPage from "./pages/EventsDetail";
 import NewEventPage from "./pages/NewEvent";
 import EditEventPage from "./pages/EditEventPage";
 import RootLayout from "./Root";
-
-// BONUS: Add another (nested) layout route that adds the <EventNavigation> component above all /events... page components
+import EventsRootLayout from "./pages/EventsRoot";
 
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<RootLayout />}>
-    <Route path="/" element={<HomePage />} />
-    <Route path="/events" element={<EventsPage />} />
-    <Route path="/events/:eventId" element={<EventsDetailPage />} />
-    <Route path="/events/new" element={<NewEventPage />} />
-    <Route path="/events/:eventId/edit" element={<EditEventPage />} />
+    <Route index="true" element={<HomePage />} />
+    <Route path="events" element={<EventsRootLayout />}>
+      <Route index="true" element={<EventsPage />} />
+      <Route path=":eventId" element={<EventsDetailPage />} />
+      <Route path="new" element={<NewEventPage />} />
+      <Route path=":eventId/edit" element={<EditEventPage />} />
+    </Route>
   </Route>
 );
 
