@@ -21,9 +21,16 @@ import AuthenticationPage, {
   action as authAction,
 } from "./pages/Authentication";
 import { action as logoutAction } from "./pages/Logout";
+import { loader as tokenLoader } from "./util/auth";
 
 const routeDefinitions = createRoutesFromElements(
-  <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
+  <Route
+    path="/"
+    element={<RootLayout />}
+    errorElement={<ErrorPage />}
+    id="root"
+    loader={tokenLoader}
+  >
     <Route index="true" element={<HomePage />} />
     <Route path="events" element={<EventsRootLayout />}>
       <Route index="true" element={<EventsPage />} loader={eventLoader} />
