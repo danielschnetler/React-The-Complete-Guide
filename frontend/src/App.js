@@ -20,6 +20,7 @@ import NewsletterPage, { action as newsletterAction } from "./pages/Newsletter";
 import AuthenticationPage, {
   action as authAction,
 } from "./pages/Authentication";
+import { action as logoutAction } from "./pages/Logout";
 
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
@@ -45,6 +46,7 @@ const routeDefinitions = createRoutesFromElements(
       />
     </Route>
     <Route path="auth" element={<AuthenticationPage />} action={authAction} />
+    <Route path="logout" action={logoutAction} />
     <Route
       path="newsletter"
       element={<NewsletterPage />}
