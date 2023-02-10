@@ -11,7 +11,7 @@ export async function action({ request, params }) {
   const data = await request.formData();
 
   const eventData = {
-    title: data.get("title"),
+    title: data.get("title"), //the name field from the form
     image: data.get("image"),
     date: data.get("date"),
     description: data.get("description"),
