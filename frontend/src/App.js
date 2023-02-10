@@ -16,6 +16,7 @@ import RootLayout from "./Root";
 import EventsRootLayout from "./pages/EventsRoot";
 import ErrorPage from "./pages/Error";
 import { action as manipulateEventAction } from "./components/EventForm";
+import NewsletterPage, { action as newsletterAction } from "./pages/Newsletter";
 
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
@@ -40,6 +41,11 @@ const routeDefinitions = createRoutesFromElements(
         action={manipulateEventAction}
       />
     </Route>
+    <Route
+      path="newsletter"
+      element={<NewsletterPage />}
+      action={newsletterAction}
+    />
   </Route>
 );
 
