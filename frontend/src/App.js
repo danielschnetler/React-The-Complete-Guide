@@ -10,11 +10,12 @@ import EventsDetailPage, {
   loader as eventDetailsLoader,
   action as deleteEventAction,
 } from "./pages/EventsDetail";
-import NewEventPage, { action as newEventAction } from "./pages/NewEvent";
+import NewEventPage from "./pages/NewEvent";
 import EditEventPage from "./pages/EditEventPage";
 import RootLayout from "./Root";
 import EventsRootLayout from "./pages/EventsRoot";
 import ErrorPage from "./pages/Error";
+import { action as manipulateEventAction } from "./components/EventForm";
 
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
@@ -27,9 +28,17 @@ const routeDefinitions = createRoutesFromElements(
           element={<EventsDetailPage />}
           action={deleteEventAction}
         />
-        <Route path="edit" element={<EditEventPage />} />
+        <Route
+          path="edit"
+          element={<EditEventPage />}
+          action={manipulateEventAction}
+        />
       </Route>
-      <Route path="new" element={<NewEventPage />} action={newEventAction} />
+      <Route
+        path="new"
+        element={<NewEventPage />}
+        action={manipulateEventAction}
+      />
     </Route>
   </Route>
 );
