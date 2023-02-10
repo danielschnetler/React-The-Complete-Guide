@@ -6,7 +6,9 @@ import {
 } from "react-router-dom";
 import HomePage from "./pages/Home";
 import EventsPage, { loader as eventLoader } from "./pages/Events";
-import EventsDetailPage from "./pages/EventsDetail";
+import EventsDetailPage, {
+  loader as eventDetailsLoader,
+} from "./pages/EventsDetail";
 import NewEventPage from "./pages/NewEvent";
 import EditEventPage from "./pages/EditEventPage";
 import RootLayout from "./Root";
@@ -18,7 +20,11 @@ const routeDefinitions = createRoutesFromElements(
     <Route index="true" element={<HomePage />} />
     <Route path="events" element={<EventsRootLayout />}>
       <Route index="true" element={<EventsPage />} loader={eventLoader} />
-      <Route path=":eventId" element={<EventsDetailPage />} />
+      <Route
+        path=":eventId"
+        element={<EventsDetailPage />}
+        loader={eventDetailsLoader}
+      />
       <Route path="new" element={<NewEventPage />} />
       <Route path=":eventId/edit" element={<EditEventPage />} />
     </Route>
