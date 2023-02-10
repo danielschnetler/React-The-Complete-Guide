@@ -21,7 +21,7 @@ import AuthenticationPage, {
   action as authAction,
 } from "./pages/Authentication";
 import { action as logoutAction } from "./pages/Logout";
-import { loader as tokenLoader } from "./util/auth";
+import { loader as tokenLoader, checkAuthLoader } from "./util/auth";
 
 const routeDefinitions = createRoutesFromElements(
   <Route
@@ -44,12 +44,14 @@ const routeDefinitions = createRoutesFromElements(
           path="edit"
           element={<EditEventPage />}
           action={manipulateEventAction}
+          loader={checkAuthLoader}
         />
       </Route>
       <Route
         path="new"
         element={<NewEventPage />}
         action={manipulateEventAction}
+        loader={checkAuthLoader}
       />
     </Route>
     <Route path="auth" element={<AuthenticationPage />} action={authAction} />
