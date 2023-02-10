@@ -17,9 +17,20 @@ import EventsRootLayout from "./pages/EventsRoot";
 import ErrorPage from "./pages/Error";
 import { action as manipulateEventAction } from "./components/EventForm";
 import NewsletterPage, { action as newsletterAction } from "./pages/Newsletter";
+import AuthenticationPage, {
+  action as authAction,
+} from "./pages/Authentication";
+import { action as logoutAction } from "./pages/Logout";
+import { loader as tokenLoader, checkAuthLoader } from "./util/auth";
 
 const routeDefinitions = createRoutesFromElements(
-  <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
+  <Route
+    path="/"
+    element={<RootLayout />}
+    errorElement={<ErrorPage />}
+    id="root"
+    loader={tokenLoader}
+  >
     <Route index="true" element={<HomePage />} />
     <Route path="events" element={<EventsRootLayout />}>
       <Route index="true" element={<EventsPage />} loader={eventLoader} />
@@ -33,14 +44,18 @@ const routeDefinitions = createRoutesFromElements(
           path="edit"
           element={<EditEventPage />}
           action={manipulateEventAction}
+          loader={checkAuthLoader}
         />
       </Route>
       <Route
         path="new"
         element={<NewEventPage />}
         action={manipulateEventAction}
+        loader={checkAuthLoader}
       />
     </Route>
+    <Route path="auth" element={<AuthenticationPage />} action={authAction} />
+    <Route path="logout" action={logoutAction} />
     <Route
       path="newsletter"
       element={<NewsletterPage />}
