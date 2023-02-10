@@ -9,7 +9,7 @@ import EventsPage, { loader as eventLoader } from "./pages/Events";
 import EventsDetailPage, {
   loader as eventDetailsLoader,
 } from "./pages/EventsDetail";
-import NewEventPage from "./pages/NewEvent";
+import NewEventPage, { action as newEventAction } from "./pages/NewEvent";
 import EditEventPage from "./pages/EditEventPage";
 import RootLayout from "./Root";
 import EventsRootLayout from "./pages/EventsRoot";
@@ -24,7 +24,7 @@ const routeDefinitions = createRoutesFromElements(
         <Route index="true" element={<EventsDetailPage />} />
         <Route path="edit" element={<EditEventPage />} />
       </Route>
-      <Route path="new" element={<NewEventPage />} />
+      <Route path="new" element={<NewEventPage />} action={newEventAction} />
     </Route>
   </Route>
 );
