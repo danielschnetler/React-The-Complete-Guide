@@ -20,13 +20,11 @@ const routeDefinitions = createRoutesFromElements(
     <Route index="true" element={<HomePage />} />
     <Route path="events" element={<EventsRootLayout />}>
       <Route index="true" element={<EventsPage />} loader={eventLoader} />
-      <Route
-        path=":eventId"
-        element={<EventsDetailPage />}
-        loader={eventDetailsLoader}
-      />
+      <Route path=":eventId" id="event-detail" loader={eventDetailsLoader}>
+        <Route index="true" element={<EventsDetailPage />} />
+        <Route path="edit" element={<EditEventPage />} />
+      </Route>
       <Route path="new" element={<NewEventPage />} />
-      <Route path=":eventId/edit" element={<EditEventPage />} />
     </Route>
   </Route>
 );
