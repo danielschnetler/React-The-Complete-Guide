@@ -27,16 +27,30 @@ export function IndexPage(props) {
   );
 }
 
-export async function getStaticProps() {
-  //has to be called getStaticProps() and only applys to pages in the pages folder
+export async function getServerSideProps(context) {
+  // will always execute on server after deployment
 
-  //Fetch data from an API
+  const req = context.req;
+  const res = context.res;
+
+  //fetch data from an API
   return {
     props: {
       meetups: DUMMY_MEETUPS,
     },
-    //revalidate: 10, //will be regenerated every 10 seconds on the server, replacing old generated pages
   };
 }
+
+// export async function getStaticProps() {
+//   //has to be called getStaticProps() and only applys to pages in the pages folder
+
+//   //Fetch data from an API
+//   return {
+//     props: {
+//       meetups: DUMMY_MEETUPS,
+//     },
+//     //revalidate: 10, //will be regenerated every 10 seconds on the server, replacing old generated pages
+//   };
+// }
 
 export default IndexPage;
