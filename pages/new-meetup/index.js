@@ -1,7 +1,7 @@
 // our-domain.com/new-meetup
 
 import NewMeetupForm from "@/components/meetups/NewMeetupForm";
-import { MongoClient } from "mongodb";
+import Head from "next/head";
 import { useRouter } from "next/router";
 
 function NewMeetupPage() {
@@ -21,7 +21,18 @@ function NewMeetupPage() {
     router.push("/");
   }
 
-  return <NewMeetupForm onAddMeetup={addMeetupHandler} />;
+  return (
+    <>
+      <Head>
+        <title>React NextJS Meetups</title>
+        <meta
+          name="New Meetup"
+          content="Add your own meetups and create network opportunities!"
+        />
+      </Head>
+      <NewMeetupForm onAddMeetup={addMeetupHandler} />{" "}
+    </>
+  );
 }
 
 export default NewMeetupPage;

@@ -1,9 +1,17 @@
 import { MongoClient } from "mongodb";
+import Head from "next/head";
 import MeetupList from "../components/meetups/MeetupList";
 
 export function IndexPage(props) {
   return (
     <>
+      <Head>
+        <title>React NextJS Meetups</title>
+        <meta
+          name="description"
+          content="Browse list of active react meetups!"
+        />
+      </Head>
       <MeetupList meetups={props.meetups} />
     </>
   );
