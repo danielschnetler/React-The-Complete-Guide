@@ -1,4 +1,5 @@
 import MeetupDetail from "@/components/meetups/MeetupDetail";
+import { MongoClient, ObjectId } from "mongodb";
 
 function MeetupDetailsPage(props) {
   return (
@@ -12,8 +13,18 @@ function MeetupDetailsPage(props) {
 }
 
 export async function getStaticPaths() {
+  const client = await MongoClient.connect(
+    "mongodb+srv://meetupAPI:TyWphpzxKF6Pl5bR@cluster0.l6so0lf.mongodb.net/meetups"
+  );
+  const db = client.db();
+  const meetupsCollection = db.collection("meetups");
+  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+  client.close();
+
   return {
-    paths: [{ params: { meetupId: "m1" } }, { params: { meetupId: "m2" } }],
+    paths: meetups.map((meetup) => ({
+      params: { meetupId: meetup._id.toString() },
+    })),
     fallback: false,
   };
 }
@@ -21,15 +32,26 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
   const meetupId = context.params.meetupId;
   console.log(meetupId);
+  const client = await MongoClient.connect(
+    "mongodb+srv://meetupAPI:TyWphpzxKF6Pl5bR@cluster0.l6so0lf.mongodb.net/meetups"
+  );
+  const db = client.db();
+  const meetupsCollection = db.collection("meetups");
+  const meetup = await meetupsCollection.findOne({
+    _id: new ObjectId(meetupId),
+  });
+  console.log(meetup);
+  client.close();
+
   //fetch data for single meetup
   return {
     props: {
       meetupData: {
-        image:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg",
-        title: "A first meetup",
-        address: "Some street 5, some city",
-        description: "The meetup description",
+        id: meetup._id.toString(),
+        title: meetup.title,
+        address: meetup.address,
+        description: meetup.description,
+        image: meetup.image,
       },
     },
   };

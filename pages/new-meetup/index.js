@@ -1,6 +1,7 @@
 // our-domain.com/new-meetup
 
 import NewMeetupForm from "@/components/meetups/NewMeetupForm";
+import { MongoClient } from "mongodb";
 import { useRouter } from "next/router";
 
 function NewMeetupPage() {
