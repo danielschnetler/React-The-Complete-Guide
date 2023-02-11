@@ -35,6 +35,7 @@ export async function getStaticProps() {
     props: {
       meetups: DUMMY_MEETUPS,
     },
+    //revalidate: 10, //will be regenerated every 10 seconds on the server, replacing old generated pages
   };
 }
 
