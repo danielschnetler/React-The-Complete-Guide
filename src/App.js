@@ -52,8 +52,10 @@ class App extends Component {
             ></div>
           )}
         </Transition>
-        <Transition>
-          {state => (<Modal show={this.state.modalIsOpen} closed={this.closeModal} />)}
+        <Transition timeout={300}>
+          {(state) => (
+            <Modal show={this.state.modalIsOpen} closed={this.closeModal} />
+          )}
         </Transition>
         {this.state.modalIsOpen ? (
           <Backdrop show={this.state.modalIsOpen} />
