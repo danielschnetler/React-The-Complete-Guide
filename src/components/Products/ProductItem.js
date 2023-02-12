@@ -1,13 +1,10 @@
-import React from "react";
-
+import React, { useContext } from "react";
 import Card from "../UI/Card";
+import { ProductsContext } from "../../context/products-context";
 import "./ProductItem.css";
-import { toggleFav } from "../../store/actions/products";
 
 const ProductItem = (props) => {
-  const toggleFavHandler = () => {
-    //
-  };
+  const toggleFav = useContext(ProductsContext).toggleFav;
 
   return (
     <Card style={{ marginBottom: "1rem" }}>
@@ -16,7 +13,7 @@ const ProductItem = (props) => {
         <p>{props.description}</p>
         <button
           className={!props.isFav ? "button-outline" : ""}
-          onClick={toggleFavHandler}
+          onClick={toggleFav.bind(null, props.id)}
         >
           {props.isFav ? "Un-Favorite" : "Favorite"}
         </button>
