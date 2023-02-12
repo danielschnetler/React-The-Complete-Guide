@@ -4,8 +4,17 @@ let globalState = {};
 let listeners = [];
 let actions = {};
 
-const useStore = () => {
+export const useStore = () => {
   const setState = useState(globalState)[1];
+
+  const dispatch = (actionIdentifier) => {
+    const newState = actions[actionIdentifier](globalState);
+    globalState = { ...globalState, ...newState };
+
+    for (const listener in listeners) {
+      listener(globalState);
+    }
+  };
 
   useEffect(() => {
     listeners.push(setState); //runs when a component mounts
@@ -13,4 +22,13 @@ const useStore = () => {
       listeners = listeners.filter((listner) => listner !== setState); //runs when the component unmounts
     };
   }, [setState]);
+
+  return [globalState, dispatch];
+};
+
+export const initStore = (userActions, initialState) => {
+  if (initialState) {
+    globalState = { ...globalState, initialState };
+  }
+  actions = { ...actions, ...userActions };
 };
