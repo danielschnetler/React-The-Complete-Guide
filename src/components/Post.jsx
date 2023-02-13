@@ -1,13 +1,10 @@
-const Add = (a, b) => {
-  return a + b;
-};
+import classes from "./Post.module.css";
 
 function Post(props) {
   return (
-    <div>
-      <p>{props.author}</p>
-      <p>{props.body}</p>
-      <p>{Add(1, 2)}</p>
+    <div className={classes.post}>
+      <p className={classes.something}>{props.author}</p>
+      <p className={classes.text}>{props.body}</p>
     </div>
   );
 }
