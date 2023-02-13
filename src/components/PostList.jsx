@@ -3,14 +3,14 @@ import Post from "./Post";
 import classes from "./PostList.module.css";
 
 function PostList() {
-  const postList = useLoaderData("").posts;
-  console.log(postList);
+  const postList = useLoaderData();
   return (
     <>
       <ul className={classes.posts}>
         {postList.length > 0 &&
           postList.map((element) => (
             <Post
+              id={element.id}
               key={Math.random().toString()}
               author={element.author}
               body={element.body}
