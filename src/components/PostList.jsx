@@ -5,30 +5,25 @@ import Post from "./Post";
 import classes from "./PostList.module.css";
 
 function PostList({ modalOpen, onHideModal }) {
-  const [enteredBody, setEnteredBody] = useState("Hello");
-  const [enteredAuthor, setEnteredAuthor] = useState("Daniel");
+  const [postList, setPostList] = useState([]);
 
-  function authorChangeHandler(event) {
-    setEnteredAuthor(event.target.value);
-  }
-  function bodyChangeHandler(event) {
-    setEnteredBody(event.target.value);
+  function addPost(post) {
+    const newList = [...postList, post];
+    console.log(newList);
+    setPostList(newList);
   }
 
   return (
     <>
       {modalOpen && (
         <Modal onHideModal={onHideModal}>
-          <NewPost
-            onAuthorChange={authorChangeHandler}
-            onBodyChange={bodyChangeHandler}
-            onCancel={onHideModal}
-          />
+          <NewPost onCancel={onHideModal} onAddPost={addPost} />
         </Modal>
       )}
       <ul className={classes.posts}>
-        <Post author={enteredAuthor} body={enteredBody} />
-        <Post author=":)" body="Check out the full course!" />
+        {postList.map((element) => (
+          <Post author={element.author} body={element.body} />
+        ))}
       </ul>
     </>
   );
