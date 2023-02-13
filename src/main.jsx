@@ -9,11 +9,11 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import NewPost from "./routes/NewPost";
 import RootLayout from "./routes/RootLayout";
-import Posts from "./routes/Posts";
+import Posts, { loader as postsLoader } from "./routes/Posts";
 
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<RootLayout />}>
-    <Route path="/" element={<Posts />}>
+    <Route path="/" element={<Posts />} loader={postsLoader}>
       <Route path="/create-post" element={<NewPost />} />
     </Route>
   </Route>
