@@ -1,10 +1,28 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import './index.css'
+import {
+  createRoutesFromElements,
+  RouterProvider,
+  Route,
+  createBrowserRouter,
+} from "react-router-dom";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import NewPost from "./routes/NewPost";
+import RootLayout from "./routes/RootLayout";
+import Posts from "./routes/Posts";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+const routeDefinitions = createRoutesFromElements(
+  <Route path="/" element={<RootLayout />}>
+    <Route path="/" element={<Posts />}>
+      <Route path="/create-post" element={<NewPost />} />
+    </Route>
+  </Route>
+);
+
+const router = createBrowserRouter(routeDefinitions);
+
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>
-)
+);
