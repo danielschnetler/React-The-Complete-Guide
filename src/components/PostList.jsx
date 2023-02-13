@@ -22,6 +22,7 @@ function PostList({ modalOpen, onHideModal }) {
           <NewPost
             onAuthorChange={authorChangeHandler}
             onBodyChange={bodyChangeHandler}
+            onCancel={onHideModal}
           />
         </Modal>
       )}
