@@ -1,7 +1,7 @@
 import { useState } from "react";
 import classes from "./NewPost.module.css";
 
-function NewPost({ onCancel, onAddPost }) {
+function NewPost({ onCancel }) {
   const [enteredBody, setEnteredBody] = useState("Hello");
   const [enteredAuthor, setEnteredAuthor] = useState("Daniel");
 
@@ -15,7 +15,13 @@ function NewPost({ onCancel, onAddPost }) {
   function submitHandler(event) {
     event.preventDefault();
     const postData = { body: enteredBody, author: enteredAuthor };
-    onAddPost(postData);
+    fetch("http://localhost:8080/posts", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify(postData),
+    });
     onCancel();
   }
 
