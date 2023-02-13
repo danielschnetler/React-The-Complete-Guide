@@ -15,7 +15,6 @@ function NewPost({ onCancel, onAddPost }) {
   function submitHandler(event) {
     event.preventDefault();
     const postData = { body: enteredBody, author: enteredAuthor };
-    console.log(postData);
     onAddPost(postData);
     onCancel();
   }
