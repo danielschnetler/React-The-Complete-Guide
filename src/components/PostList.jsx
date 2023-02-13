@@ -4,8 +4,7 @@ import NewPost from "./NewPost";
 import Post from "./Post";
 import classes from "./PostList.module.css";
 
-function PostList() {
-  const [modalOpen, setModalOpen] = useState(true);
+function PostList({ modalOpen, onHideModal }) {
   const [enteredBody, setEnteredBody] = useState("Hello");
   const [enteredAuthor, setEnteredAuthor] = useState("Daniel");
 
@@ -16,14 +15,10 @@ function PostList() {
     setEnteredBody(event.target.value);
   }
 
-  function modelClosedHandler() {
-    setModalOpen(false);
-  }
-
   return (
     <>
       {modalOpen && (
-        <Modal onModalChange={modelClosedHandler}>
+        <Modal onHideModal={onHideModal}>
           <NewPost
             onAuthorChange={authorChangeHandler}
             onBodyChange={bodyChangeHandler}
