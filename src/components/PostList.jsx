@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import NewPost from "./NewPost";
 import Post from "./Post";
@@ -6,20 +6,29 @@ import classes from "./PostList.module.css";
 
 function PostList({ modalOpen, onHideModal }) {
   const [postList, setPostList] = useState([]);
+  const [isFetching, setIsFetching] = useState(false);
 
-  function addPostHandler(post) {
-    setPostList((existingPosts) => [...existingPosts, post]);
-  }
+  useEffect(() => {
+    const fetchposts = async () => {
+      setIsFetching(true);
+      const response = await fetch("http://localhost:8080/posts");
+      const resData = await response.json();
+      setPostList(resData.posts);
+      setIsFetching(false);
+    };
+    fetchposts();
+  }, []);
 
   return (
     <>
       {modalOpen && (
         <Modal onHideModal={onHideModal}>
-          <NewPost onCancel={onHideModal} onAddPost={addPostHandler} />
+          <NewPost onCancel={onHideModal} />
         </Modal>
       )}
       <ul className={classes.posts}>
-        {postList.length > 0 &&
+        {!isFetching &&
+          postList.length > 0 &&
           postList.map((element) => (
             <Post
               key={Math.random().toString()}
@@ -27,12 +36,13 @@ function PostList({ modalOpen, onHideModal }) {
               body={element.body}
             />
           ))}
-        {postList.length === 0 && (
+        {!isFetching && postList.length === 0 && (
           <div>
             <h2> There are no posts yet</h2>
             <p>Start adding some!</p>
           </div>
         )}
+        {isFetching && <p>Loading...</p>}
       </ul>
     </>
   );
