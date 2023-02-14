@@ -1,9 +1,10 @@
-import { useLoaderData, Link } from "react-router-dom";
+import { useLoaderData, Link, Form, redirect } from "react-router-dom";
 
 import Modal from "../components/Modal";
 import classes from "./PostDetails.module.css";
+import commonbutton from "./Button.module.css";
 
-function PostDetails() {
+function PostDetails({}) {
   const post = useLoaderData();
 
   if (!post) {
@@ -26,6 +27,16 @@ function PostDetails() {
       <main className={classes.details}>
         <p className={classes.author}>{post.author}</p>
         <p className={classes.text}>{post.body}</p>
+        <p>
+          <Link
+            className={commonbutton.action}
+            to={"/"}
+            type="button"
+            onClick={async () => action(post.id)}
+          >
+            Delete?
+          </Link>
+        </p>
       </main>
     </Modal>
   );
@@ -34,8 +45,16 @@ function PostDetails() {
 export default PostDetails;
 
 export async function loader({ params }) {
-  console.log(params.id);
   const response = await fetch("http://localhost:8080/posts/" + params.id);
   const resData = await response.json();
   return resData.post;
+}
+
+async function action(id) {
+  console.log(id);
+  const response = await fetch("http://localhost:8080/" + id, {
+    method: "DELETE",
+  });
+  console.log(response);
+  return redirect("/");
 }
