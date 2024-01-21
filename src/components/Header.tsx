@@ -45,10 +45,10 @@ const StyledHeader = styled.header`
 
 export default function Header() {
   return (
-    <StyledHeader>
-      <img src={logo} alt="A canvas" />
+    <header className="flex flex-col items-center mt-8 mb-16">
+      <img src={logo} alt="A canvas" className="mb-8"/>
       <h1>ReactArt</h1>
       <p>A community of artists and art-lovers.</p>
-    </StyledHeader>
+    </header>
   );
 }
