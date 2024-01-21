@@ -28,7 +28,7 @@ const Results: React.FC<IResults> = ({ userInput }) => {
       result[0].annualInvestment;
 
   return (
-    <>
+    <div id="result" className="center">
       {result && (
         <table>
           <thead>
@@ -44,7 +44,9 @@ const Results: React.FC<IResults> = ({ userInput }) => {
           <tbody>
             {result.map((row, index) => {
               const totalInterest =
-                row.valueEndOfYear - row.annualInvestment * row.year - userInput.initialInvestment;
+                row.valueEndOfYear -
+                row.annualInvestment * row.year -
+                userInput.initialInvestment;
               initialInvestment;
               const totalAmountInvested = row.valueEndOfYear - totalInterest;
               return (
@@ -61,7 +63,7 @@ const Results: React.FC<IResults> = ({ userInput }) => {
           </tbody>
         </table>
       )}
-    </>
+    </div>
   );
 };
 
