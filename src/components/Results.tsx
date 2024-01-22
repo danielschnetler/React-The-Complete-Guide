@@ -10,7 +10,7 @@ interface IResults {
 }
 
 const Results: React.FC<IResults> = ({ userInput }) => {
-  let result;
+  let result: any = [];
   if (userInput) {
     result = calculateInvestmentResults({
       initialInvestment: userInput.initialInvestment,
@@ -19,6 +19,8 @@ const Results: React.FC<IResults> = ({ userInput }) => {
       duration: userInput.duration,
     });
   }
+  
+  if (result?.length === 0) return <p>Please enter a valid value</p>;
 
   let initialInvestment: number;
   if (result)
