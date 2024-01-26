@@ -4,11 +4,13 @@ import Header from "./components/Header";
 import Shop from "./components/Shop";
 import { DUMMY_PRODUCTS } from "./dummy-products";
 import Product from "./components/Product";
-import { CartContext } from "./store/shopping-cart-context";
+import { CartContext, ICartContext } from "./store/shopping-cart-context";
 
 function App() {
-  const [shoppingCart, setShoppingCart] = useState<IShoppingCart>({
+  const [shoppingCart, setShoppingCart] = useState<ICartContext>({
     items: [],
+    addItemToCart: () => {},
+    updateItemQuantity: () => {},
   });
 
   function handleAddItemToCart(id: string) {
@@ -67,16 +69,19 @@ function App() {
     });
   }
 
+  const contextValue = {
+    items: shoppingCart.items,
+    addItemToCart: handleAddItemToCart,
+    updateItemQuantity: handleUpdateCartItemQuantity,
+  };
+
   return (
-    <CartContext.Provider value={shoppingCart}>
-      <Header
-        cart={shoppingCart}
-        onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
-      />
+    <CartContext.Provider value={contextValue}>
+      <Header />
       <Shop>
         {DUMMY_PRODUCTS.map((product) => (
           <li key={product.id}>
-            <Product {...product} onAddToCart={handleAddItemToCart} />
+            <Product item={product} />
           </li>
         ))}
       </Shop>

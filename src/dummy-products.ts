@@ -5,13 +5,15 @@ import merlotSuit from "./assets/merlot-suit.jpg";
 import moonlightDress from "./assets/moonlight-dress.jpg";
 import denimPioneer from "./assets/denim-pioneer.jpg";
 
-export const DUMMY_PRODUCTS: {
+export interface IProduct {
   id: string;
   image: string;
   price: number;
   title: string;
   description: string;
-}[] = [
+}
+
+export const DUMMY_PRODUCTS: IProduct[] = [
   {
     id: "p1",
     image: mochaOvercoat,

@@ -8,10 +8,12 @@ export interface ICartItem {
 }
 export interface ICartContext {
   items: ICartItem[];
+  addItemToCart: (id: string) => void;
+  updateItemQuantity: (id: string, quantity: number) => void;
 }
 
-export const CartContext = createContext<ICartContext>(
-  {
-    items: [],
-  }
-);
+export const CartContext = createContext<ICartContext>({
+  items: [],
+  addItemToCart: () => {},
+  updateItemQuantity: () => {},
+});

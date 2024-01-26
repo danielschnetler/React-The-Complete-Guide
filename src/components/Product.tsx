@@ -1,31 +1,24 @@
-interface IProduct {
-  id: string;
-  image: Image;
-  title: string;
-  price: number;
-  description: string;
-  onAddToCart: (id: string) => void;
+import { IProduct } from "../dummy-products";
+import { useContext } from "react";
+import { CartContext } from "../store/shopping-cart-context";
+
+interface IProductDetail {
+  item: IProduct;
 }
 
-const Product: React.FC<IProduct> = ({
-  id,
-  image,
-  title,
-  price,
-  description,
-  onAddToCart,
-}) => {
+const Product: React.FC<IProductDetail> = ({ item }) => {
+  const { addItemToCart } = useContext(CartContext);
   return (
     <article className="product">
-      <img src={image} alt={title} />
+      <img src={item.image} alt={item.title} />
       <div className="product-content">
         <div>
-          <h3>{title}</h3>
-          <p className="product-price">${price}</p>
-          <p>{description}</p>
+          <h3>{item.title}</h3>
+          <p className="product-price">${item.price}</p>
+          <p>{item.description}</p>
         </div>
         <p className="product-actions">
-          <button onClick={() => onAddToCart(id)}>Add to Cart</button>
+          <button onClick={() => addItemToCart(item.id)}>Add to Cart</button>
         </p>
       </div>
     </article>
