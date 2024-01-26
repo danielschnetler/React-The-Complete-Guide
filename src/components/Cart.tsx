@@ -1,11 +1,12 @@
-import { ICartItem } from "../App";
+import { useContext } from "react";
+import { CartContext } from "../store/shopping-cart-context";
 
 interface ICart {
-  items: ICartItem[];
   onUpdateItemQuantity: (id: string, quantity: number) => void;
 }
 
-const Cart: React.FC<ICart> = ({ items, onUpdateItemQuantity }) => {
+const Cart: React.FC<ICart> = ({ onUpdateItemQuantity }) => {
+  const { items } = useContext(CartContext);
   const totalPrice = items.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0

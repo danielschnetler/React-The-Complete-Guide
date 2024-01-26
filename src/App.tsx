@@ -4,17 +4,7 @@ import Header from "./components/Header";
 import Shop from "./components/Shop";
 import { DUMMY_PRODUCTS } from "./dummy-products";
 import Product from "./components/Product";
-
-export interface ICartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-}
-
-export interface IShoppingCart {
-  items: ICartItem[];
-}
+import { CartContext } from "./store/shopping-cart-context";
 
 function App() {
   const [shoppingCart, setShoppingCart] = useState<IShoppingCart>({
@@ -78,7 +68,7 @@ function App() {
   }
 
   return (
-    <>
+    <CartContext.Provider value={shoppingCart}>
       <Header
         cart={shoppingCart}
         onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
@@ -90,7 +80,7 @@ function App() {
           </li>
         ))}
       </Shop>
-    </>
+    </CartContext.Provider>
   );
 }
 
