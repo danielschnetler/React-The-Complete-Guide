@@ -3,12 +3,13 @@ import { useState } from "react";
 import Header from "./components/Header";
 import Shop from "./components/Shop";
 import { DUMMY_PRODUCTS } from "./dummy-products";
+import Product from "./components/Product";
 
 export interface ICartItem {
-  id: string,
-  name: string,
-  price: number,
-  quantity: number,
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
 }
 
 export interface IShoppingCart {
@@ -82,7 +83,13 @@ function App() {
         cart={shoppingCart}
         onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
       />
-      <Shop onAddItemToCart={handleAddItemToCart} />
+      <Shop>
+        {DUMMY_PRODUCTS.map((product) => (
+          <li key={product.id}>
+            <Product {...product} onAddToCart={handleAddItemToCart} />
+          </li>
+        ))}
+      </Shop>
     </>
   );
 }
