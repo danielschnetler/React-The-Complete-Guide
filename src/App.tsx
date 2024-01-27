@@ -1,15 +1,32 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Places from "./components/Places.tsx";
 import { AVAILABLE_PLACES, IPlace } from "./data.ts";
 import Modal from "./components/Modal.js";
 import DeleteConfirmation from "./components/DeleteConfirmation.tsx";
 import logoImg from "./assets/logo.png";
+import { sortPlacesByDistance } from "./loc.ts";
+
+enum LocalStorageKeys {
+  SELECTED_PLACES = "Selected_Places",
+}
 
 const App: React.FC = () => {
   const modal = useRef();
   const selectedPlace = useRef();
   const [pickedPlaces, setPickedPlaces] = useState<IPlace[]>([]);
+  const [availablePlaces, setAvailablePlaces] = useState<IPlace[]>([]);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const sortedPlaces = sortPlacesByDistance(
+        AVAILABLE_PLACES,
+        position.coords.latitude,
+        position.coords.longitude
+      );
+      setAvailablePlaces(sortedPlaces);
+    });
+  }, []);
 
   function handleStartRemovePlace(id: string) {
     modal.current.open();
@@ -28,6 +45,15 @@ const App: React.FC = () => {
       const place = AVAILABLE_PLACES.find((place) => place.id === id);
       return [place, ...prevPickedPlaces];
     });
+
+    const storedIds: string[] =
+      JSON.parse(localStorage.getItem(LocalStorageKeys.SELECTED_PLACES)) || [];
+    if (storedIds.indexOf(id) === -1) {
+      localStorage.setItem(
+        LocalStorageKeys.SELECTED_PLACES,
+        JSON.stringify([id, ...storedIds])
+      );
+    }
   }
 
   function handleRemovePlace() {
@@ -35,6 +61,12 @@ const App: React.FC = () => {
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
     modal.current.close();
+    const storedIds: string[] =
+      JSON.parse(localStorage.getItem(LocalStorageKeys.SELECTED_PLACES)) || [];
+    localStorage.setItem(
+      LocalStorageKeys.SELECTED_PLACES,
+      JSON.stringify(storedIds.filter((id) => id !== selectedPlace.current))
+    );
   }
 
   return (
@@ -63,9 +95,9 @@ const App: React.FC = () => {
         />
         <Places
           title="Available Places"
-          places={AVAILABLE_PLACES}
+          places={availablePlaces}
           onSelectPlace={handleSelectPlace}
-          fallbackText=""
+          fallbackText="Sorting places by distance..."
         />
       </main>
     </>
