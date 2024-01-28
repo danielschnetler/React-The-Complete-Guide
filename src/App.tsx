@@ -1,11 +1,11 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import Places, { IPlace } from "./components/Places.tsx";
 import Modal from "./components/Modal.js";
 import DeleteConfirmation from "./components/DeleteConfirmation.tsx";
 import logoImg from "./assets/logo.png";
 import AvailablePlaces from "./components/AvailablePlaces.tsx";
-import { updateUserPlaces } from "./http.ts";
+import { fetchAvailablePlaces, updateUserPlaces } from "./http.ts";
 import ErrorComponent from "./components/ErrorComponent.tsx";
 
 const App: React.FC = () => {
@@ -16,6 +16,21 @@ const App: React.FC = () => {
     message: string;
     error: boolean;
   }>({ message: "", error: false });
+
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        const places = await fetchAvailablePlaces();
+        setPickedPlaces(places);
+      } catch (error) {
+        setErrorUpdatingPlaces({
+          message: error.message || "Failed to load saved places.",
+          error: true,
+        });
+      }
+    };
+    fetchPlaces();
+  }, []);
 
   function handleStartRemovePlace(place: IPlace) {
     setModalIsOpen(true);
@@ -47,11 +62,22 @@ const App: React.FC = () => {
     }
   }
 
-  const handleRemovePlace = useCallback(function handleRemovePlace() {
+  const handleRemovePlace = useCallback(async () => {
     setPickedPlaces((prevPickedPlaces) =>
-      prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
+      prevPickedPlaces.filter((place) => place.id !== selectedPlace.current.id)
     );
     setModalIsOpen(false);
+    try {
+      await updateUserPlaces(
+        pickedPlaces.filter((place) => place.id !== selectedPlace.current.id)
+      );
+    } catch (error: Error) {
+      setPickedPlaces(pickedPlaces);
+      setErrorUpdatingPlaces({
+        message: error.message || "Failed to save deleted place",
+        error: true,
+      });
+    }
   }, []);
 
   const handleErrorClose = () => {
@@ -66,7 +92,7 @@ const App: React.FC = () => {
       <Modal open={errorUpdatingPlaces.error} onClose={handleErrorClose}>
         {errorUpdatingPlaces.message.trim() !== "" && (
           <ErrorComponent
-            title="Error saving places"
+            title="An error occured!"
             message={errorUpdatingPlaces.message}
             onConfirm={handleErrorClose}
           />
