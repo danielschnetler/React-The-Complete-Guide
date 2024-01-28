@@ -1,21 +1,10 @@
 import React, { useCallback, useRef, useState } from "react";
 
-import Places from "./components/Places.tsx";
+import Places, { IPlace } from "./components/Places.tsx";
 import Modal from "./components/Modal.js";
 import DeleteConfirmation from "./components/DeleteConfirmation.tsx";
 import logoImg from "./assets/logo.png";
 import AvailablePlaces from "./components/AvailablePlaces.tsx";
-
-export interface IPlace {
-  id: string;
-  title: string;
-  image: {
-    src: Image;
-    alt: string;
-  };
-  lat: number;
-  lon: number;
-}
 
 const App: React.FC = () => {
   const selectedPlace = useRef();

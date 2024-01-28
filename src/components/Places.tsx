@@ -1,9 +1,20 @@
-import { IPlace } from "../data";
+export interface IPlace {
+  id: string;
+  title: string;
+  image: {
+    src: Image;
+    alt: string;
+  };
+  lat: number;
+  lon: number;
+}
 
-interface IPlaces {
+export interface IPlaces {
   title: string;
   places: IPlace[];
   fallbackText: string;
+  loadingText: string;
+  isLoading: boolean;
   onSelectPlace: (place: IPlace) => void;
 }
 
@@ -11,17 +22,22 @@ const Places: React.FC<IPlaces> = ({
   title,
   places,
   fallbackText,
+  loadingText,
+  isLoading,
   onSelectPlace,
 }) => {
   return (
     <section className="places-category">
       <h2>{title}</h2>
-      {places.length === 0 && <p className="fallback-text">{fallbackText}</p>}
-      {places.length > 0 && (
+      {isLoading && <p className={"fallback-text"}>{loadingText}</p>}
+      {!isLoading && places.length === 0 && (
+        <p className={"fallback-text"}>{fallbackText}</p>
+      )}
+      {!isLoading && places.length > 0 && (
         <ul className="places">
           {places.map((place) => (
             <li key={place.id} className="place-item">
-              <button onClick={() => onSelectPlace(place.id)}>
+              <button onClick={() => onSelectPlace(place)}>
                 <img
                   src={`http://localhost:3000/${place.image.src}`}
                   alt={place.image.alt}
