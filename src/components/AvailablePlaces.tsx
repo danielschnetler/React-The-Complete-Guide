@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Places, { IPlace } from "./Places";
 import ErrorComponent from "./ErrorComponent";
+import { sortPlacesByDistance } from "../loc";
 
 interface IAvailablePlaces {
   onSelectPlace: (place: IPlace) => void;
@@ -10,10 +11,14 @@ const AvailablePlaces: React.FC<IAvailablePlaces> = ({ onSelectPlace }) => {
   const [availablePlaces, setAvailablePlaces] = useState<IPlace[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [appError, setAppError] = useState<{}>();
+  const [fallbackText, setFallbackText] = useState<string>(
+    "No places available."
+  );
 
   useEffect(() => {
     const fetchPlaces = async () => {
       setIsFetching(true);
+      setFallbackText("Fetching place data...");
 
       try {
         const response = await fetch("http://localhost:3000/places");
@@ -22,14 +27,24 @@ const AvailablePlaces: React.FC<IAvailablePlaces> = ({ onSelectPlace }) => {
         if (!response.ok) {
           throw new Error("Failed to fetch places");
         }
-        setAvailablePlaces(resData.places);
+
+        setFallbackText("Sorting places by distance...");
+        navigator.geolocation.getCurrentPosition((position) => {
+          const sortedPlaces = sortPlacesByDistance(
+            resData.places,
+            position.coords.latitude,
+            position.coords.longitude
+          );
+          setAvailablePlaces(sortedPlaces);
+          setIsFetching(false);
+        });
       } catch (error) {
         setAppError({
           message:
             error.message || "Could not fetch places, please try again later",
         });
+        setIsFetching(false);
       }
-      setIsFetching(false);
     };
     fetchPlaces();
   }, []);
@@ -49,8 +64,7 @@ const AvailablePlaces: React.FC<IAvailablePlaces> = ({ onSelectPlace }) => {
       title="Available Places"
       places={availablePlaces}
       isLoading={isFetching}
-      loadingText="Fetching place data..."
-      fallbackText="No places available."
+      fallbackText={fallbackText}
       onSelectPlace={onSelectPlace}
     />
   );

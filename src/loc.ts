@@ -1,4 +1,4 @@
-import { IPlace } from "./data";
+import { IPlace } from "./components/Places";
 
 function toRad(value: number) {
   return (value * Math.PI) / 180;
