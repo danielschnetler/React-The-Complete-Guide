@@ -1,10 +1,11 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
 import IconButton from "../UI/IconButton";
 import MinusIcon from "../UI/Icons/MinusIcon";
 import PlusIcon from "../UI/Icons/PlusIcon";
 import CounterOutput from "./CounterOutput";
 import { log } from "../../log.ts";
+import CounterHistory from "./CounterHistory.tsx";
 
 function isPrime(number: number) {
   log("Calculating if is prime number", 2, "other");
@@ -22,6 +23,11 @@ function isPrime(number: number) {
 
   return true;
 }
+
+const getId = () => {
+  return Math.random() * 1000;
+};
+
 const Counter = memo(function Counter({
   initialCount,
 }: {
@@ -32,15 +38,31 @@ const Counter = memo(function Counter({
     () => isPrime(initialCount),
     [initialCount]
   );
+  const [counterChanges, setCounterChanges] = useState<
+    { value: number; id: number }[]
+  >([]);
 
-  const [counter, setCounter] = useState(initialCount);
+  useEffect(() => {
+    setCounterChanges([{ value: initialCount, id: getId() }]);
+  }, [initialCount]);
+
+  const currentCounter = counterChanges.reduce(
+    (prevCounter, counterChange) => prevCounter + counterChange.value,
+    0
+  );
 
   const handleDecrement = useCallback(() => {
-    setCounter((prevCounter) => prevCounter - 1);
+    setCounterChanges((prevChanges) => [
+      { value: -1, id: getId() },
+      ...prevChanges,
+    ]);
   }, []);
 
   const handleIncrement = useCallback(() => {
-    setCounter((prevCounter) => prevCounter + 1);
+    setCounterChanges((prevChanges) => [
+      { value: 1, id: getId() },
+      ...prevChanges,
+    ]);
   }, []);
 
   return (
@@ -53,11 +75,12 @@ const Counter = memo(function Counter({
         <IconButton icon={MinusIcon} onClick={handleDecrement}>
           Decrement
         </IconButton>
-        <CounterOutput value={counter} />
+        <CounterOutput value={currentCounter} />
         <IconButton icon={PlusIcon} onClick={handleIncrement}>
           Increment
         </IconButton>
       </p>
+      <CounterHistory history={counterChanges} />
     </section>
   );
 });
