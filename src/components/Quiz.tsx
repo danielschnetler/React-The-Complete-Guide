@@ -4,32 +4,16 @@ import quizCompleteImage from "../assets/quiz-complete.png";
 import Question from "./Question";
 
 const Quiz: React.FC = () => {
-  const [answerState, setAnswerState] = useState("");
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
-  const activeQuestionIndex =
-    answerState === "" ? userAnswers.length : userAnswers.length - 1;
+  const activeQuestionIndex = userAnswers.length;
   const quizCompleted: boolean = activeQuestionIndex === QUESTIONS.length;
 
-  const saveAnswer = useCallback(
-    function saveAnswer(answer: string) {
-      setAnswerState("answered");
-      setUserAnswers((prevAnswers) => {
-        const newAnwers = [...prevAnswers, answer];
-        return newAnwers;
-      });
-
-      const result = answer === QUESTIONS[activeQuestionIndex].answers[0];
-
-      setTimeout(() => {
-        setAnswerState(result ? "correct" : "wrong");
-
-        setTimeout(() => {
-          setAnswerState("");
-        }, 2000);
-      }, 1000);
-    },
-    [activeQuestionIndex]
-  );
+  const saveAnswer = useCallback(function saveAnswer(answer: string) {
+    setUserAnswers((prevAnswers) => {
+      const newAnwers = [...prevAnswers, answer];
+      return newAnwers;
+    });
+  }, []);
 
   const onSkipAnswer = useCallback(() => saveAnswer(""), [saveAnswer]);
 
@@ -37,12 +21,9 @@ const Quiz: React.FC = () => {
     <div id="quiz">
       <Question
         key={activeQuestionIndex}
-        questionText={QUESTIONS[activeQuestionIndex].text}
-        answers={QUESTIONS[activeQuestionIndex].answers}
-        onSelectAnswer={saveAnswer}
-        answerState={answerState}
-        selectedAnswer={userAnswers[userAnswers.length - 1]}
+        index={activeQuestionIndex}
         onSkipAnswer={onSkipAnswer}
+        onSelectAnswer={saveAnswer}
       />
     </div>
   ) : (

@@ -36,7 +36,11 @@ const Answers: React.FC<IAnswers> = ({
         }
         return (
           <li key={`${index}`} className={"answer " + answerState}>
-            <button onClick={() => onSelect(item)} className={cssClasses}>
+            <button
+              onClick={() => onSelect(item)}
+              className={cssClasses}
+              disabled={selectedAnswer !== ""}
+            >
               {item}
             </button>
           </li>
