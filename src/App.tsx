@@ -1,5 +1,13 @@
+import Header from "./components/Header";
+import Quiz from "./components/Quiz";
+
 const App: React.FC = () => {
-  return <></>;
+  return (
+    <>
+      <Header />
+      <Quiz />
+    </>
+  );
 };
 
 export default App;
