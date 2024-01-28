@@ -4,7 +4,7 @@ interface IPlaces {
   title: string;
   places: IPlace[];
   fallbackText: string;
-  onSelectPlace: (id: string) => void;
+  onSelectPlace: (place: IPlace) => void;
 }
 
 const Places: React.FC<IPlaces> = ({
@@ -22,7 +22,10 @@ const Places: React.FC<IPlaces> = ({
           {places.map((place) => (
             <li key={place.id} className="place-item">
               <button onClick={() => onSelectPlace(place.id)}>
-                <img src={place.image.src} alt={place.image.alt} />
+                <img
+                  src={`http://localhost:3000/${place.image.src}`}
+                  alt={place.image.alt}
+                />
                 <h3>{place.title}</h3>
               </button>
             </li>
