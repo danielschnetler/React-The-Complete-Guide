@@ -19,7 +19,7 @@ function App() {
       <Header />
       <main>
         <ConfigureCounter setChosenCount={handleSetCount} />
-        <Counter initialCount={chosenCount} />
+        <Counter initialCount={chosenCount} key={chosenCount} />
         <Counter initialCount={0} />
       </main>
     </>
