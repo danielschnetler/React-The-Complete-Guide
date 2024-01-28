@@ -3,30 +3,31 @@ import { useEffect, useState } from "react";
 interface IQuestionTimer {
   timeout: number;
   onTimeout: () => void;
+  mode: string;
 }
 
-const QuestionTimer: React.FC<IQuestionTimer> = ({ timeout, onTimeout }) => {
+const QuestionTimer: React.FC<IQuestionTimer> = ({
+  timeout,
+  onTimeout,
+  mode,
+}) => {
   const [remainingTime, setRemainingTime] = useState<number>(timeout);
 
   useEffect(() => {
-    //console.log("Timer Set");
     const timer = setTimeout(onTimeout, timeout);
 
     return () => {
       clearTimeout(timer);
-      setRemainingTime(timeout);
     };
   }, [onTimeout, timeout]);
 
   useEffect(() => {
-    //console.log("Interval Set");
     const interval = setInterval(() => {
       setRemainingTime((prevTime) => prevTime - 100);
-      //console.log("Decrementing interval");
-    }, 100); //executes 10 times per second
+    }, 100);
 
     return () => {
-      //console.log("Clearing interval");
+      console.log("Clearing interval");
       clearInterval(interval);
     };
   }, []);
@@ -36,6 +37,7 @@ const QuestionTimer: React.FC<IQuestionTimer> = ({ timeout, onTimeout }) => {
       id="question-time"
       value={timeout - remainingTime}
       max={timeout}
+      className={mode}
     />
   );
 };

@@ -28,7 +28,7 @@ const Question: React.FC<IQuestion> = ({
 
   function handleSelectAnswer(text: string) {
     setAnswer((prevAnswer) => {
-      const newAnswer = { ...prevAnswer, answerState: "answered" };
+      const newAnswer = { ...prevAnswer, answerState: "selected" };
       return newAnswer;
     });
 
@@ -50,22 +50,28 @@ const Question: React.FC<IQuestion> = ({
     }, 1000);
   }
 
-  let answerState = "";
-  if (answer.answerState === "answered") {
-    answerState = "selected";
-  }
+  let timer = TIMER;
+
   if (answer.selectedAnswer) {
-    answerState = answer.isCorrect ? "correct" : "wrong";
+    answer.answerState = answer.isCorrect ? "correct" : "wrong";
+    timer = 2000;
   }
 
   return (
     <div id="question">
-      <QuestionTimer onTimeout={onSkipAnswer} timeout={TIMER} />
+      <QuestionTimer
+        key={timer}
+        onTimeout={
+          answer.answerState === "unanswered" ? onSkipAnswer : () => {}
+        }
+        timeout={timer}
+        mode={answer.answerState}
+      />
       <h2>{QUESTIONS[index].text}</h2>
       <Answers
         answers={QUESTIONS[index].answers}
         selectedAnswer={answer.selectedAnswer}
-        answerState={answerState}
+        answerState={answer.answerState}
         onSelect={handleSelectAnswer}
       />
     </div>

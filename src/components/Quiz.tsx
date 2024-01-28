@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import QUESTIONS from "../data/Questions";
-import quizCompleteImage from "../assets/quiz-complete.png";
 import Question from "./Question";
+import Summary from "./Summary";
 
 const Quiz: React.FC = () => {
   const [userAnswers, setUserAnswers] = useState<string[]>([]);
@@ -17,7 +17,10 @@ const Quiz: React.FC = () => {
 
   const onSkipAnswer = useCallback(() => saveAnswer(""), [saveAnswer]);
 
-  const content = !quizCompleted ? (
+  if (quizCompleted) {
+    return <Summary userAnsers={userAnswers} />;
+  }
+  return (
     <div id="quiz">
       <Question
         key={activeQuestionIndex}
@@ -26,27 +29,7 @@ const Quiz: React.FC = () => {
         onSelectAnswer={saveAnswer}
       />
     </div>
-  ) : (
-    <div id="summary">
-      <img src={quizCompleteImage} alt="Quiz complete image"></img>
-      {/* <ul>
-        {QUESTIONS.map((item, index) => {
-          const correctAnswer = userAnswers[index] === 0;
-          const className = correctAnswer ? ".correct" : ".wrong";
-          return (
-            <li key={index}>
-              <h3 id="question">{item.text}</h3>
-              <p id="user-answer" className={className}>
-                Your answer was {correctAnswer ? "correct" : "wrong"}
-              </p>
-            </li>
-          );
-        })}
-      </ul> */}
-    </div>
   );
-
-  return content;
 };
 
 export default Quiz;
