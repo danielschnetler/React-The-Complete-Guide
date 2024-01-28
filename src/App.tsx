@@ -5,11 +5,17 @@ import Modal from "./components/Modal.js";
 import DeleteConfirmation from "./components/DeleteConfirmation.tsx";
 import logoImg from "./assets/logo.png";
 import AvailablePlaces from "./components/AvailablePlaces.tsx";
+import { updateUserPlaces } from "./http.ts";
+import ErrorComponent from "./components/ErrorComponent.tsx";
 
 const App: React.FC = () => {
   const selectedPlace = useRef();
   const [pickedPlaces, setPickedPlaces] = useState<IPlace[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [errorUpdatingPlaces, setErrorUpdatingPlaces] = useState<{
+    message: string;
+    error: boolean;
+  }>({ message: "", error: false });
 
   function handleStartRemovePlace(place: IPlace) {
     setModalIsOpen(true);
@@ -20,7 +26,7 @@ const App: React.FC = () => {
     setModalIsOpen(false);
   }
 
-  function handleSelectPlace(selectedPlace: IPlace) {
+  async function handleSelectPlace(selectedPlace: IPlace) {
     setPickedPlaces((prevPickedPlaces) => {
       if (!prevPickedPlaces) {
         prevPickedPlaces = [];
@@ -30,6 +36,15 @@ const App: React.FC = () => {
       }
       return [selectedPlace, ...prevPickedPlaces];
     });
+    try {
+      await updateUserPlaces([selectedPlace, ...pickedPlaces]);
+    } catch (error: Error) {
+      setPickedPlaces(pickedPlaces);
+      setErrorUpdatingPlaces({
+        message: error.message || "Failed to save picked places",
+        error: true,
+      });
+    }
   }
 
   const handleRemovePlace = useCallback(function handleRemovePlace() {
@@ -39,8 +54,24 @@ const App: React.FC = () => {
     setModalIsOpen(false);
   }, []);
 
+  const handleErrorClose = () => {
+    setErrorUpdatingPlaces({
+      message: "",
+      error: false,
+    });
+  };
+
   return (
     <>
+      <Modal open={errorUpdatingPlaces.error} onClose={handleErrorClose}>
+        {errorUpdatingPlaces.message.trim() !== "" && (
+          <ErrorComponent
+            title="Error saving places"
+            message={errorUpdatingPlaces.message}
+            onConfirm={handleErrorClose}
+          />
+        )}
+      </Modal>
       <Modal open={modalIsOpen} onClose={handleStopRemovePlace}>
         <DeleteConfirmation
           onCancel={() => {
@@ -60,8 +91,9 @@ const App: React.FC = () => {
       </header>
       <main>
         <Places
+          isLoading={false}
           title="I'd like to visit ..."
-          fallbackText={"Select the places you would like to visit below."}
+          fallbackText="Select the places you would like to visit below."
           places={pickedPlaces}
           onSelectPlace={handleStartRemovePlace}
         />
