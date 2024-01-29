@@ -1,52 +1,47 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Places, { IPlace } from "./Places";
 import ErrorComponent from "./ErrorComponent";
 import { sortPlacesByDistance } from "../loc";
 import { fetchAvailablePlaces } from "../http";
+import useCustomFetch from "../hooks/useFetch";
 
 interface IAvailablePlaces {
   onSelectPlace: (place: IPlace) => void;
 }
 
+const fetchSortedPlaces = async () => {
+  const places = await fetchAvailablePlaces();
+
+  return new Promise((resolve) => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const sortedPlaces = sortPlacesByDistance(
+        places as IPlace[],
+        position.coords.latitude,
+        position.coords.longitude
+      );
+      resolve(sortedPlaces);
+    });
+  });
+};
+
 const AvailablePlaces: React.FC<IAvailablePlaces> = ({ onSelectPlace }) => {
-  const [availablePlaces, setAvailablePlaces] = useState<IPlace[]>([]);
-  const [isFetching, setIsFetching] = useState<boolean>(false);
-  const [appError, setAppError] = useState<{}>();
   const [fallbackText, setFallbackText] = useState<string>(
     "No places available."
   );
 
-  useEffect(() => {
-    const fetchPlaces = async () => {
-      setIsFetching(true);
-      setFallbackText("Fetching place data...");
-      try {
-        const data = await fetchAvailablePlaces();
-        setFallbackText("Sorting places by distance...");
-        navigator.geolocation.getCurrentPosition((position) => {
-          const sortedPlaces = sortPlacesByDistance(
-            data,
-            position.coords.latitude,
-            position.coords.longitude
-          );
-          setAvailablePlaces(sortedPlaces);
-          setIsFetching(false);
-        });
-      } catch (error) {
-        setAppError({
-          message:
-            error.message || "Could not fetch places, please try again later",
-        });
-        setIsFetching(false);
-      }
-    };
-    fetchPlaces();
-  }, []);
+  const {
+    data: availablePlaces,
+    error,
+    isFetching,
+  } = useCustomFetch({
+    fetchFunction: fetchSortedPlaces,
+    initialValue: [],
+  });
 
-  if (appError) {
+  if (error) {
     return (
       <ErrorComponent
-        message={appError.message}
+        message={error.message}
         onConfirm={() => {}}
         title="An Error Occured!"
       />
