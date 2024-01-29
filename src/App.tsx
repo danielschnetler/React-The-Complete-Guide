@@ -5,29 +5,44 @@ import Modal from "./components/Modal.js";
 import DeleteConfirmation from "./components/DeleteConfirmation.tsx";
 import logoImg from "./assets/logo.png";
 import AvailablePlaces from "./components/AvailablePlaces.tsx";
-import { fetchAvailablePlaces, updateUserPlaces } from "./http.ts";
+import { fetchUserPlaces, updateUserPlaces } from "./http.ts";
 import ErrorComponent from "./components/ErrorComponent.tsx";
 
 const App: React.FC = () => {
   const selectedPlace = useRef();
   const [pickedPlaces, setPickedPlaces] = useState<IPlace[]>([]);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [fallbackText, setFallbackText] = useState<string>(
+    "Select the places you would like to visit below."
+  );
   const [errorUpdatingPlaces, setErrorUpdatingPlaces] = useState<{
     message: string;
     error: boolean;
   }>({ message: "", error: false });
 
   useEffect(() => {
+    if (pickedPlaces.length === 0) {
+      setFallbackText("Select the places you would like to visit below.");
+    }
+  }, [pickedPlaces]);
+
+  useEffect(() => {
     const fetchPlaces = async () => {
+      setIsFetching(true);
+      setFallbackText("Fetching saved places");
       try {
-        const places = await fetchAvailablePlaces();
+        const places = await fetchUserPlaces();
+        console.log(places);
         setPickedPlaces(places);
-      } catch (error) {
+      } catch (error: any) {
         setErrorUpdatingPlaces({
           message: error.message || "Failed to load saved places.",
           error: true,
         });
       }
+      setIsFetching(false);
+      setFallbackText("");
     };
     fetchPlaces();
   }, []);
@@ -116,10 +131,19 @@ const App: React.FC = () => {
         </p>
       </header>
       <main>
+        {errorUpdatingPlaces.error && (
+          <ErrorComponent
+            title={"An error has occured"}
+            message={errorUpdatingPlaces.message}
+            onConfirm={function (): void {
+              setErrorUpdatingPlaces({ message: "", error: false });
+            }}
+          />
+        )}
         <Places
-          isLoading={false}
+          isLoading={isFetching}
           title="I'd like to visit ..."
-          fallbackText="Select the places you would like to visit below."
+          fallbackText={fallbackText}
           places={pickedPlaces}
           onSelectPlace={handleStartRemovePlace}
         />
