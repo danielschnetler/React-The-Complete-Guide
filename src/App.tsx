@@ -1,25 +1,30 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import Places, { IPlace } from "./components/Places.tsx";
-import Modal from "./components/Modal.js";
+import Modal from "./components/Modal.tsx";
 import DeleteConfirmation from "./components/DeleteConfirmation.tsx";
 import logoImg from "./assets/logo.png";
-import AvailablePlaces from "./components/AvailablePlaces.tsx";
 import { fetchUserPlaces, updateUserPlaces } from "./http.ts";
 import ErrorComponent from "./components/ErrorComponent.tsx";
+import useCustomFetch from "./hooks/useFetch.ts";
+import AvailablePlaces from "./components/AvailablePlaces.tsx";
 
 const App: React.FC = () => {
   const selectedPlace = useRef();
-  const [pickedPlaces, setPickedPlaces] = useState<IPlace[]>([]);
-  const [isFetching, setIsFetching] = useState<boolean>(false);
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [fallbackText, setFallbackText] = useState<string>(
     "Select the places you would like to visit below."
   );
-  const [errorUpdatingPlaces, setErrorUpdatingPlaces] = useState<{
-    message: string;
-    error: boolean;
-  }>({ message: "", error: false });
+
+  const {
+    data: pickedPlaces,
+    error,
+    isFetching,
+    setData: setPickedPlaces,
+  } = useCustomFetch({
+    fetchFunction: fetchUserPlaces,
+    initialValue: [],
+  });
 
   useEffect(() => {
     if (pickedPlaces.length === 0) {
@@ -28,23 +33,7 @@ const App: React.FC = () => {
   }, [pickedPlaces]);
 
   useEffect(() => {
-    const fetchPlaces = async () => {
-      setIsFetching(true);
-      setFallbackText("Fetching saved places");
-      try {
-        const places = await fetchUserPlaces();
-        console.log(places);
-        setPickedPlaces(places);
-      } catch (error: any) {
-        setErrorUpdatingPlaces({
-          message: error.message || "Failed to load saved places.",
-          error: true,
-        });
-      }
-      setIsFetching(false);
-      setFallbackText("");
-    };
-    fetchPlaces();
+    setFallbackText("Fetching saved places");
   }, []);
 
   function handleStartRemovePlace(place: IPlace) {
@@ -79,12 +68,16 @@ const App: React.FC = () => {
 
   const handleRemovePlace = useCallback(async () => {
     setPickedPlaces((prevPickedPlaces) =>
-      prevPickedPlaces.filter((place) => place.id !== selectedPlace.current.id)
+      prevPickedPlaces.filter(
+        (place: { id: string }) => place.id !== selectedPlace.current.id
+      )
     );
     setModalIsOpen(false);
     try {
       await updateUserPlaces(
-        pickedPlaces.filter((place) => place.id !== selectedPlace.current.id)
+        pickedPlaces.filter(
+          (place: { id: string }) => place.id !== selectedPlace.current.id
+        )
       );
     } catch (error: Error) {
       setPickedPlaces(pickedPlaces);
@@ -93,22 +86,20 @@ const App: React.FC = () => {
         error: true,
       });
     }
-  }, []);
+  }, [pickedPlaces, setPickedPlaces]);
 
   const handleErrorClose = () => {
-    setErrorUpdatingPlaces({
-      message: "",
-      error: false,
-    });
+    error?.error ? (error.error = false) : undefined;
+    error?.message ? (error.message = "") : error?.message;
   };
 
   return (
     <>
-      <Modal open={errorUpdatingPlaces.error} onClose={handleErrorClose}>
-        {errorUpdatingPlaces.message.trim() !== "" && (
+      <Modal open={error?.error ?? false} onClose={handleErrorClose}>
+        {error?.message.trim() !== "" && (
           <ErrorComponent
             title="An error occured!"
-            message={errorUpdatingPlaces.message}
+            message={error?.message ?? "An error occured"}
             onConfirm={handleErrorClose}
           />
         )}
@@ -131,13 +122,11 @@ const App: React.FC = () => {
         </p>
       </header>
       <main>
-        {errorUpdatingPlaces.error && (
+        {error?.error && (
           <ErrorComponent
             title={"An error has occured"}
-            message={errorUpdatingPlaces.message}
-            onConfirm={function (): void {
-              setErrorUpdatingPlaces({ message: "", error: false });
-            }}
+            message={error.message}
+            onConfirm={handleErrorClose}
           />
         )}
         <Places

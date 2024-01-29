@@ -1,6 +1,6 @@
 import { IPlace } from "./components/Places";
 
-export async function fetchAvailablePlaces() {
+export async function fetchAvailablePlaces(): Promise<{}> {
   const response = await fetch("http://localhost:3000/places");
   const resData = await response.json();
 
