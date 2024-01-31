@@ -1,3 +1,5 @@
+import { booleanLiteral } from "@babel/types";
+import { bool } from "prop-types";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 
 const Login: React.FC = () => {
@@ -5,13 +7,25 @@ const Login: React.FC = () => {
     email: string;
     password: string;
   }>({ email: "", password: "" });
+  const [valuesEntered, setValuesEntered] = useState<{
+    email: boolean;
+    password: boolean;
+  }>({ email: false, password: false });
 
   function handleInputChange(identifier: string, value: string) {
     setEnteredValues((prevState) => ({
       ...prevState,
       [identifier]: value,
     }));
+    setValuesEntered((prevValues) => ({ ...prevValues, [identifier]: false }));
   }
+
+  function handleInputBlur(identifier: string) {
+    setValuesEntered((prevValues) => ({ ...prevValues, [identifier]: true }));
+  }
+
+  const emailIsInvalid =
+    enteredValues.email && !enteredValues.email.includes("@");
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -30,9 +44,13 @@ const Login: React.FC = () => {
             id="email"
             type="email"
             name="email"
+            onBlur={() => handleInputBlur("email")}
             onChange={(event) => handleInputChange("email", event.target.value)}
             value={enteredValues?.email}
           />
+          <div className="control-error">
+            {emailIsInvalid && <p>Please enter a valid email address</p>}
+          </div>
         </div>
 
         <div className="control no-margin">

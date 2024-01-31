@@ -1,6 +1,7 @@
-import React, { FormEvent, useRef } from "react";
+import React, { FormEvent, useRef, useState } from "react";
 
 const Login: React.FC = () => {
+  const [emailIsInvalid, setEmailIsInvalid] = useState<boolean>(false);
   const emailRef = useRef();
   const passwordRef = useRef();
 
@@ -10,6 +11,15 @@ const Login: React.FC = () => {
     const enteredEmail = emailRef.current.value;
     const enteredPassword = passwordRef.current.value;
     console.log(enteredEmail, enteredPassword);
+
+    const emailValid = !enteredEmail.includes("@");
+    if (!emailValid) {
+      setEmailIsInvalid(true);
+      return;
+    }
+
+    setEmailIsInvalid(false);
+    console.log("Sending http requests");
   }
 
   return (
@@ -20,6 +30,9 @@ const Login: React.FC = () => {
         <div className="control no-margin">
           <label htmlFor="email">Email</label>
           <input id="email" type="email" name="email" ref={emailRef} />
+          <div className="control-error">
+            {emailIsInvalid && <p>Please enter a valid email address.</p>}
+          </div>
         </div>
 
         <div className="control no-margin">
