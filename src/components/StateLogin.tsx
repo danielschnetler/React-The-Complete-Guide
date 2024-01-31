@@ -1,36 +1,29 @@
-import { booleanLiteral } from "@babel/types";
-import { bool } from "prop-types";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { FormEvent } from "react";
+import Input from "./Input";
+import { hasMinLength, isEmail, isNotEmpty } from "../util/validation";
+import { useInput } from "../hooks/useInput";
 
 const Login: React.FC = () => {
-  const [enteredValues, setEnteredValues] = useState<{
-    email: string;
-    password: string;
-  }>({ email: "", password: "" });
-  const [valuesEntered, setValuesEntered] = useState<{
-    email: boolean;
-    password: boolean;
-  }>({ email: false, password: false });
-
-  function handleInputChange(identifier: string, value: string) {
-    setEnteredValues((prevState) => ({
-      ...prevState,
-      [identifier]: value,
-    }));
-    setValuesEntered((prevValues) => ({ ...prevValues, [identifier]: false }));
-  }
-
-  function handleInputBlur(identifier: string) {
-    setValuesEntered((prevValues) => ({ ...prevValues, [identifier]: true }));
-  }
-
-  const emailIsInvalid =
-    enteredValues.email && !enteredValues.email.includes("@");
+  const {
+    value: emailValue,
+    handleInputChange: handleEmailChange,
+    handleInputBlur: handleEmailBlur,
+    hasError: emailIsInvalid,
+  } = useInput("", (value) => isEmail(value) && isNotEmpty(value));
+  const {
+    value: passwordValue,
+    handleInputChange: handlePasswordChange,
+    handleInputBlur: handlePasswordBlur,
+    hasError: passwordIsInvalid,
+  } = useInput("", (value) => hasMinLength(value, 6));
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    if (passwordIsInvalid || emailIsInvalid) {
+      return;
+    }
     console.log("Submitted");
-    console.log(enteredValues);
+    //event.target.clear();
   }
 
   return (
@@ -38,33 +31,30 @@ const Login: React.FC = () => {
       <h2>Login</h2>
 
       <div className="control-row">
-        <div className="control no-margin">
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            onBlur={() => handleInputBlur("email")}
-            onChange={(event) => handleInputChange("email", event.target.value)}
-            value={enteredValues?.email}
-          />
-          <div className="control-error">
-            {emailIsInvalid && <p>Please enter a valid email address</p>}
-          </div>
-        </div>
-
-        <div className="control no-margin">
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            onChange={(event) =>
-              handleInputChange("password", event.target.value)
-            }
-            value={enteredValues?.password}
-          />
-        </div>
+        <Input
+          label="Email"
+          id="email"
+          type="email"
+          name="email"
+          onBlur={handleEmailBlur}
+          onChange={handleEmailChange}
+          value={emailValue}
+          error={emailIsInvalid && "Please enter a valid email"}
+        />
+        <Input
+          label="Password"
+          id="password"
+          type="password"
+          name="password"
+          onBlur={handlePasswordBlur}
+          onChange={handlePasswordChange}
+          minLength={6}
+          value={passwordValue}
+          error={
+            passwordIsInvalid &&
+            "Please make the password longer than 6 characters"
+          }
+        />
       </div>
 
       <p className="form-actions">
