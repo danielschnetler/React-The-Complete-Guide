@@ -1,7 +1,8 @@
 import { assertSequenceExpression } from "@babel/types";
-import React from "react";
+import React, { useState } from "react";
 
 const Signup: React.FC = () => {
+  const [passwordsAreNotEqual, setPasswordsAreNotEqual] = useState<boolean>();
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
 
@@ -11,6 +12,13 @@ const Signup: React.FC = () => {
     const data = Object.fromEntries(fd.entries());
 
     const allData = { ...data, acquisition: acquisitionChannel };
+
+    if (data.password !== data["confirm-password"]) {
+      setPasswordsAreNotEqual(true);
+      return;
+    }
+    setPasswordsAreNotEqual(false);
+
     event.target.reset();
   }
 
@@ -21,22 +29,27 @@ const Signup: React.FC = () => {
 
       <div className="control">
         <label htmlFor="email">Email</label>
-        <input id="email" type="email" name="email" />
+        <input id="email" type="email" name="email" required />
       </div>
 
       <div className="control-row">
         <div className="control">
           <label htmlFor="password">Password</label>
-          <input id="password" type="password" name="password" />
+          <input id="password" type="password" name="password" minLength={6} />
         </div>
 
         <div className="control">
-          <label htmlFor="confirm-password">Confirm Password</label>
+          <label htmlFor="confirm-password" minLength={6}>
+            Confirm Password
+          </label>
           <input
             id="confirm-password"
             type="password"
             name="confirm-password"
           />
+          <div className="control-error">
+            {passwordsAreNotEqual && <p>Passwords must match.</p>}
+          </div>
         </div>
       </div>
 
@@ -45,12 +58,12 @@ const Signup: React.FC = () => {
       <div className="control-row">
         <div className="control">
           <label htmlFor="first-name">First Name</label>
-          <input type="text" id="first-name" name="first-name" />
+          <input type="text" id="first-name" name="first-name" required />
         </div>
 
         <div className="control">
           <label htmlFor="last-name">Last Name</label>
-          <input type="text" id="last-name" name="last-name" />
+          <input type="text" id="last-name" name="last-name" required />
         </div>
       </div>
 
@@ -95,8 +108,13 @@ const Signup: React.FC = () => {
 
       <div className="control">
         <label htmlFor="terms-and-conditions">
-          <input type="checkbox" id="terms-and-conditions" name="terms" />I
-          agree to the terms and conditions
+          <input
+            type="checkbox"
+            id="terms-and-conditions"
+            name="terms"
+            required
+          />
+          I agree to the terms and conditions
         </label>
       </div>
 
