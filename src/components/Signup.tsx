@@ -7,12 +7,11 @@ const Signup: React.FC = () => {
 
     const fd = new FormData(event.target);
     const acquisitionChannel = fd.getAll("acquisition");
-    console.log(acquisitionChannel);
+
     const data = Object.fromEntries(fd.entries());
-    console.log(fd.entries());
-    console.log(data);
+
     const allData = { ...data, acquisition: acquisitionChannel };
-    console.log(allData);
+    event.target.reset();
   }
 
   return (
