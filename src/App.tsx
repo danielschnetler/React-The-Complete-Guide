@@ -1,17 +1,17 @@
 import Header from "./components/Header";
 import Meals from "./components/Meals";
-import { CartContext } from "./store/shopping-cart-context";
+import CartContextProvider from "./store/shopping-cart-context";
+import React from "react";
 
-function App() {
-  //const [shoppingCart, setShoppingCart] = useState<IShopppingCart>();
+const App: React.FC = () => {
   return (
-    <CartContext.Provider value={shoppingCart}>
+    <CartContextProvider>
       <Header />
       <main>
         <Meals />
       </main>
-    </CartContext.Provider>
+    </CartContextProvider>
   );
-}
+};
 
 export default App;

@@ -1,25 +1,32 @@
-interface IMeal {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-}
+import React, { useContext } from "react";
+import { CartContext, IMeal } from "../store/shopping-cart-context";
+import { currencyFormatter } from "../util/formatting";
+import { Button } from "./UI/Button";
 
 const Meal: React.FC<IMeal> = ({ id, name, price, description, image }) => {
-  return (
-    <div className="meal-item">
-      <img src={`http://localhost:3000/${image}`} alt={`Image of ${name}`} />
-      <h3>{name}</h3>
+  const { addItemToCart } = useContext(CartContext);
 
-      <p key={id} className="meal-item-price">
-        {price}
-      </p>
-      <p className="meal-item-description">{description}</p>
-      <div className="meal-item-actions">
-        <button>Add to Cart</button>
-      </div>
-    </div>
+  return (
+    <li className="meal-item" key={id}>
+      <article>
+        <img src={`http://localhost:3000/${image}`} alt={`Image of ${name}`} />
+        <div>
+          <h3>{name}</h3>
+          <p key={`${id}${price}`} className="meal-item-price">
+            {currencyFormatter.format(price)}
+          </p>
+          <p key={`${id}${name}`} className="meal-item-description">
+            {description}
+          </p>
+        </div>
+
+        <p key={`${id}button`} className="meal-item-actions">
+          <Button className="button" onClick={() => addItemToCart(id)}>
+            Add to Cart
+          </Button>
+        </p>
+      </article>
+    </li>
   );
 };
 

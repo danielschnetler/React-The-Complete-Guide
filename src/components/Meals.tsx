@@ -1,23 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 import Meal from "./Meal";
+import React from "react";
+import { CartContext } from "../store/shopping-cart-context";
 
 const Meals: React.FC = () => {
-  const [fetchedData, setFetchedData] = useState();
-
-  useEffect(() => {
-    const getData = async () => {
-      const response = await fetch("http://localhost:3000/meals");
-      const data = await response.json();
-      setFetchedData(data);
-    };
-    getData();
-  }, []);
-  console.log(fetchedData);
+  const { meals: fetchedData } = useContext(CartContext);
   return (
-    <div id="meals">
+    <ul id="meals">
       {fetchedData &&
-        fetchedData.map((meal) => (
+        fetchedData.map((meal, index) => (
           <Meal
+            key={index}
             id={meal.id}
             image={meal.image}
             name={meal.name}
@@ -25,7 +18,7 @@ const Meals: React.FC = () => {
             description={meal.description}
           />
         ))}
-    </div>
+    </ul>
   );
 };
 
