@@ -21,7 +21,12 @@ const Meal: React.FC<IMeal> = ({ id, name, price, description, image }) => {
         </div>
 
         <p key={`${id}button`} className="meal-item-actions">
-          <Button className="button" onClick={() => addItemToCart(id)}>
+          <Button
+            className="button"
+            onClick={() =>
+              addItemToCart({ id, name, price, description, image })
+            }
+          >
             Add to Cart
           </Button>
         </p>

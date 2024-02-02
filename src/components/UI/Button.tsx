@@ -1,9 +1,10 @@
 import React, { ReactNode } from "react";
 
 interface IButton {
-  children: ReactNode;
-  textOnly: boolean;
-  className: string;
+  children?: ReactNode;
+  textOnly?: boolean;
+  className?: string;
+  onClick?: () => void;
 }
 export const Button: React.FC<IButton> = ({
   children,

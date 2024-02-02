@@ -1,11 +1,4 @@
-import { isTemplateElement } from "@babel/types";
-import React, {
-  ReactNode,
-  createContext,
-  useEffect,
-  useReducer,
-  useState,
-} from "react";
+import React, { ReactNode, createContext, useReducer } from "react";
 
 export interface ICartItem {
   id: string;
@@ -24,26 +17,26 @@ export interface IMeal {
 
 export interface ICartContext {
   cartItems: ICartItem[];
-  meals: IMeal[];
-  addItemToCart: (id: string) => void;
+  addItemToCart: (meal: IMeal) => void;
   updateItemQuantity: (id: string, quantity: number) => void;
+  clearCartItems: () => void;
 }
 
 export const CartContext: React.Context<ICartContext> =
   createContext<ICartContext>({
     cartItems: [],
-    meals: [],
     addItemToCart: () => {},
     updateItemQuantity: () => {},
+    clearCartItems: () => {},
   });
 
 const cartReducer = (state, action) => {
   if (action.type === "ADD_ITEM") {
     const existingItem = state.cartItems.findIndex(
-      (item) => item.id === action.id
+      (item) => item.id === action.meal.id
     );
     if (existingItem === -1) {
-      const newItem = state.meals?.find((item) => item.id === action.id);
+      const newItem = action.meal;
       const updatedItems: ICartItem[] = [
         ...state.cartItems,
         {
@@ -56,7 +49,7 @@ const cartReducer = (state, action) => {
       return { ...state, cartItems: updatedItems };
     }
     let updatedCartItems = [...state.cartItems];
-    updatedCartItems[existingItem].quantity += action.quantity;
+    updatedCartItems[existingItem].quantity += 1;
     return { ...state, cartItems: updatedCartItems };
   }
   if (action.type === "REMOVE_ITEM") {
@@ -82,8 +75,8 @@ const cartReducer = (state, action) => {
     }
     return { ...state, cartItems: updatedCartItems };
   }
-  if (action.type == "UPDATE_DATA") {
-    return { ...state, meals: action.data };
+  if (action.type === "CLEAR_CART") {
+    return { ...state, cartItems: [] };
   }
 
   return state;
@@ -96,35 +89,25 @@ interface ICartContextProvider {
 const CartContextProvider: React.FC<ICartContextProvider> = ({ children }) => {
   const [cartState, dispatchCartAction] = useReducer(cartReducer, {
     cartItems: [],
-    meals: [],
   });
 
-  useEffect(() => {
-    const getData = async () => {
-      const response = await fetch("http://localhost:3000/meals");
-      if (!response.ok) {
-        console.log("Error retrieving server data");
-        return;
-      }
-      const data = await response.json();
-      dispatchCartAction({ type: "UPDATE_DATA", data: data });
-    };
-    getData();
-  }, []);
-
-  const handleAddItemToCart = (id: string) => {
-    dispatchCartAction({ type: "ADD_ITEM", id: id });
+  const handleAddItemToCart = (mealItem: IMeal) => {
+    dispatchCartAction({ type: "ADD_ITEM", meal: mealItem });
   };
 
   const handleUpdateQuantity = (id: string, quantity: number) => {
     dispatchCartAction({ type: "UPDATE_QUANTITY", id: id, quantity: quantity });
   };
 
+  const handleClearCart = () => {
+    dispatchCartAction({ type: "CLEAR_CART" });
+  };
+
   const contextValue = {
     cartItems: cartState.cartItems,
-    meals: cartState.meals,
     addItemToCart: handleAddItemToCart,
     updateItemQuantity: handleUpdateQuantity,
+    clearCartItems: handleClearCart,
   };
 
   return (

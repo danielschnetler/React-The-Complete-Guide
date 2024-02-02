@@ -1,16 +1,14 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext } from "react";
 import logo from "../assets/logo.jpg";
-import CartModal from "./CartModal";
+import Cart from "./Cart";
 import { CartContext } from "../store/shopping-cart-context";
 import { Button } from "./UI/Button";
+import { UserProgressContext } from "../store/UserProgressContext";
+import Checkout from "./Checkout";
 
 const Header: React.FC = () => {
-  const modalRef = useRef();
   const { cartItems } = useContext(CartContext);
-
-  function onCartClick() {
-    modalRef.current.open();
-  }
+  const { showCart } = useContext(UserProgressContext);
 
   const numberOfItems =
     cartItems &&
@@ -18,14 +16,15 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <CartModal ref={modalRef} />
+      <Cart />
+      <Checkout />
       <header id="main-header">
         <div id="title">
           <img src={logo} alt="Company Logo" />
           <h1>ReactFood</h1>
         </div>
         <nav>
-          <Button textOnly onClick={onCartClick}>
+          <Button textOnly onClick={showCart}>
             Cart ({numberOfItems})
           </Button>
         </nav>
