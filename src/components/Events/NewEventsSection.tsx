@@ -11,13 +11,13 @@ export interface IEvent {
   date: string;
   time: string;
   location: string;
-  image: HTMLImageElement;
+  image: string;
 }
 
 export default function NewEventsSection() {
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["events"],
-    queryFn: fetchEvents,
+    queryFn: ({ signal }) => fetchEvents({ signal }),
     staleTime: 5000,
     //gcTime:
   });

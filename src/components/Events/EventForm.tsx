@@ -4,9 +4,9 @@ import ImagePicker from "../ImagePicker";
 import { IEvent } from "./NewEventsSection";
 
 interface IEventForm {
-  inputData: IEvent;
-  onSubmit: (event: {}) => void;
-  children: ReactNode;
+  inputData?: IEvent;
+  onSubmit?: (event: {}) => void;
+  children?: ReactNode;
 }
 
 export default function EventForm({
@@ -14,11 +14,11 @@ export default function EventForm({
   onSubmit,
   children,
 }: IEventForm) {
-  const [selectedImage, setSelectedImage] = useState<HTMLImageElement>(
-    inputData?.image
+  const [selectedImage, setSelectedImage] = useState<string>(
+    inputData?.image ?? ""
   );
 
-  function handleSelectImage(image: HTMLImageElement) {
+  function handleSelectImage(image: string) {
     setSelectedImage(image);
   }
 
@@ -28,7 +28,7 @@ export default function EventForm({
     const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData);
 
-    onSubmit({ ...data, image: selectedImage });
+    onSubmit && onSubmit({ ...data, image: selectedImage });
   }
 
   return (
