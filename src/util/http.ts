@@ -16,12 +16,15 @@ interface IABortSignal {
 
 interface IFetchEvents extends IABortSignal {
   searchTerm?: string;
+  max?: number;
 }
 
-export async function fetchEvents({ signal, searchTerm }: IFetchEvents) {
+export async function fetchEvents({ signal, searchTerm, max }: IFetchEvents) {
   //console.log(searchTerm);
   let url = "http://localhost:3000/events";
-  if (searchTerm) url += `?search=${searchTerm}`;
+  if (searchTerm && max) url += `?search=${searchTerm}&max=${max}`;
+  else if (searchTerm) url += `?search=${searchTerm}`;
+  else if (max) url += `?max=${max}`;
   const response = await fetch(url, { signal });
 
   if (!response.ok) {
